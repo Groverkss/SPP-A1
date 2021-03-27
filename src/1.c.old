@@ -60,34 +60,34 @@ void calculateDp(int32_t n) {
 void asmMul(void* matIn, void* matAIn, void* matBIn, int32_t colA, int32_t colB,
             int32_t col, int32_t row);
 
-void asmMul(void* matIn, void* matAIn, void* matBIn, int32_t colA, int32_t colB,
-            int32_t col, int32_t row) {
-    register int64_t* matK = matBIn;
-    register int64_t* matI = matAIn;
+/* void asmMul(void* matIn, void* matAIn, void* matBIn, int32_t colA, int32_t */
+/* colB, */
+/*             int32_t col, int32_t row) { */
+/*     int64_t(*mat)[col] = matIn; */
+/*     int64_t(*matA)[colA] = matAIn; */
+/*     int64_t(*matB)[colB] = matBIn; */
 
-    /* K loop */
-    for (int k = 0; k < colA; k++) {
-        register int64_t* matIJ = matIn;
-        register int64_t* matIK = matI;
+/*     for (int k = 0; k < colA; k++) { */
+/*         for (int i = 0; i < row; i++) { */
+/*             for (int j = 0; j < col; j++) { */
+/*                 mat[i][j] += matA[i][k] * matB[k][j]; */
+/*             } */
+/*         } */
+/*     } */
+/* } */
 
-        /* I loop */
-        for (int i = 0; i < row; i++) {
-            register int64_t* matKJ = matK;
-
-            int64_t* endMatKJ = matKJ + col;
-
-            /* J loop */
-            while (endMatKJ != matKJ) {
-                (*matIJ) += (*matIK) * (*matKJ);
-                matIJ++;
-                matKJ++;
-            }
-            matIK += colA;
-        }
-        matK += colB;
-        matI++;
-    }
-}
+__asm__(
+    "asmMul:\n.S:\n pushq %r12\n testl %ecx, %ecx\n pushq %rbp\n pushq %rbx\n "
+    "movl "
+    "32(%rsp), %ebx\n jle .X1\n leal -1(%rcx), %eax\n movq %rdi, %rbp\n movslq "
+    "%r9d, %rdi\n salq $3, %rdi\n movq %rsi, %r8\n movq %rdx, %r10\n leaq "
+    "8(%rsi,%rax,8), %r12\n.X2:\n testl %ebx, %ebx\n jle .X2E\n xorl %esi, "
+    "%esi\n xorl %r11d, %r11d\n.X3:\n testl %r9d, %r9d\n jle .X1E\n leaq "
+    "0(%rbp,%rsi), %rcx\n xorl %eax, %eax\n.Mul:\n movq (%r8,%rsi), %rdx\n "
+    "imulq (%r10,%rax,8), %rdx\n addq %rdx, (%rcx,%rax,8)\n addq $1, %rax\n "
+    "cmpl %eax, %r9d\n jg .Mul\n.X1E:\n addl $1, %r11d\n addq %rdi, %rsi\n "
+    "cmpl %ebx, %r11d\n jne .X3\n.X2E:\n addq $8, %r8\n addq %rdi, %r10\n cmpq "
+    "%r12, %r8\n jne .X2\n.X1:\n popq %rbx\n popq %rbp\n popq %r12\n ret\n");
 
 void matrixMultiply(int indexA, int indexB) {
     int32_t colA = size_y[indexA], colB = size_y[indexB];
