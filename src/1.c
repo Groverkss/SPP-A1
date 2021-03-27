@@ -60,21 +60,21 @@ void calculateDp(int32_t n) {
 void asmMul(void* matIn, void* matAIn, void* matBIn, int32_t colA, int32_t colB,
             int32_t col, int32_t row);
 
-void asmMul(void* matIn, void* matAIn, void* matBIn, int32_t colA, int32_t
-colB,
-            int32_t col, int32_t row) {
-    int64_t(*mat)[col] = matIn;
-    int64_t(*matA)[colA] = matAIn;
-    int64_t(*matB)[colB] = matBIn;
+/* void asmMul(void* matIn, void* matAIn, void* matBIn, int32_t colA, int32_t */
+/* colB, */
+/*             int32_t col, int32_t row) { */
+/*     int64_t(*mat)[col] = matIn; */
+/*     int64_t(*matA)[colA] = matAIn; */
+/*     int64_t(*matB)[colB] = matBIn; */
 
-    for (int k = 0; k < colA; k++) {
-        for (int i = 0; i < row; i++) {
-            for (int j = 0; j < col; j++) {
-                mat[i][j] += matA[i][k] * matB[k][j];
-            }
-        }
-    }
-}
+/*     for (int k = 0; k < colA; k++) { */
+/*         for (int i = 0; i < row; i++) { */
+/*             for (int j = 0; j < col; j++) { */
+/*                 mat[i][j] += matA[i][k] * matB[k][j]; */
+/*             } */
+/*         } */
+/*     } */
+/* } */
 
 __asm__(
     "asmMul:\n.S:\n pushq %r12\n testl %ecx, %ecx\n pushq %rbp\n pushq %rbx\n "
