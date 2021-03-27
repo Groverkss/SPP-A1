@@ -62,17 +62,23 @@ void asmMul(void* matIn, void* matAIn, void* matBIn, int32_t colA, int32_t colB,
 
 void asmMul(void* matIn, void* matAIn, void* matBIn, int32_t colA, int32_t colB,
             int32_t col, int32_t row) {
-    int64_t(*matA)[colA] = matAIn;
-    int64_t(*matB)[colB] = matBIn;
+    register int64_t* matK = matBIn;
+    register int64_t* matI = matAIn;
 
-    for (int k = 0; k < colA; k++) {
-        register int64_t *matIJ = matIn;
+    for (int k = 0; k < row; k++) {
+        register int64_t* matIJ = matIn;
+        register int64_t* matIK = matI;
         for (int i = 0; i < row; i++) {
+            register int64_t* matKJ = matK;
             for (int j = 0; j < col; j++) {
-                (*matIJ) += matA[i][k] * matB[k][j];
+                (*matIJ) += (*matIK) * (*matKJ);
                 matIJ++;
+                matKJ++;
             }
+            matIK += colA;
         }
+        matK += colB;
+        matI++;
     }
 }
 
