@@ -138,12 +138,12 @@ int32_t main(void) {
 
     /* calculateDp(n); */
 
-    clockStart();
+    /* clockStart(); */
     for (int i = 1; i < n; i++) {
         matrixMultiply(i - 1, i);
     }
 
-    clockEnd();
+    /* clockEnd(); */
 
     printMat(n - 1);
 }

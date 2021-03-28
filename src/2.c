@@ -79,8 +79,8 @@ int main(void) {
         min(dist[X - 1][Y - 1], W);
     }
 
-    clockStart();
+    /* clockStart(); */
     floydWarshall();
-    clockEnd();
+    /* clockEnd(); */
     printDist();
 }
